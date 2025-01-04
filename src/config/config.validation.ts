@@ -12,18 +12,8 @@
 import * as Joi from 'joi';
 
 export const configValidationSchema = Joi.object({
-  /**
-   * PORT
-   * The port number on which the application will run.
-   * Required to ensure the application has a valid listening port.
-   */
-  PORT: Joi?.number()?.required(),
 
-  /**
-   * APP_VERSION
-   * The current version of the application (e.g., "1.0.0").
-   * Used to track and manage application versions.
-   */
+  PORT: Joi?.number()?.required(),
   APP_VERSION: Joi?.string()?.required(),
 
   DB_USER: Joi?.string()?.required(),

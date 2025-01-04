@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
-import { DbConfigData, ConfigDBData } from './db-config.interface';
+import { DbConfigData } from './db-config.interface';
 import { DEFAULT_CONFIG } from './db-config.default';
+import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class ConfigService {
@@ -10,9 +10,29 @@ export class ConfigService {
         this.config = DEFAULT_CONFIG; // Initialize with defaults
     }
 
+     /**
+     * Load Configuration from Environment
+     *
+     * Overrides default configuration settings by dynamically loading values from environment
+     * variables. If an environment variable is not defined, the default value is retained.
+     *
+     * @param {Record<string, any>} env - A key-value object representing the application's environment variables.
+     */
+
     public loadFromEnvironment(env: Record<string, any>): void {
         this.config.env = env.NODE_ENV || DEFAULT_CONFIG.env;
         this.config.port = env.PORT ? parseInt(env.PORT, 10) : DEFAULT_CONFIG.port;
+
+
+        /**
+         * Load Database Configuration
+         *
+         * Populates the database configuration with values from environment variables or defaults
+         * if the variables are not defined. This includes connection details, pool size, schema
+         * synchronization, and advanced settings like dialect and charset.
+         */
+
+
         this.config.db = {
             type: env.DB_TYPE || DEFAULT_CONFIG.db.type,
             user: env.DB_USER || DEFAULT_CONFIG.db.user,
@@ -30,6 +50,13 @@ export class ConfigService {
         this.config.logLevel = env.LOG_LEVEL || DEFAULT_CONFIG.logLevel;
     }
 
+     /**
+     * Get Current Configuration
+     *
+     * Provides access to the current configuration settings.
+     *
+     * @returns {DbConfigData} The current application configuration object.
+     */
     public getConfig(): DbConfigData {
         return this.config;
     }

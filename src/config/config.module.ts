@@ -5,11 +5,12 @@
  * It leverages the NestJS `ConfigModule` to load and validate environment-specific settings dynamically.
  */
 
-import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
-import appConfig from './app.config';
 import { configValidationSchema } from './config.validation';
+import { ConfigModule } from '@nestjs/config';
 import { Config } from './config.interface';
+import { Module } from '@nestjs/common';
+import appConfig from './app.config';
+import redis from './redis.config';
 
 @Module({
     imports: [
@@ -17,6 +18,7 @@ import { Config } from './config.interface';
             isGlobal: true, // Makes the ConfigModule global, so it can be used throughout the application without re-importing
             load: [
                 appConfig,              // Application-level configurations
+                redis
             ],
             validationSchema: configValidationSchema, // Validates environment variables using a Joi schema
             validationOptions: {
@@ -28,15 +30,17 @@ import { Config } from './config.interface';
 })
 export class ConfigAppModule {
     /**
-     * Returns a structured configuration object combining all configuration sources.
-     * 
-     * This method centralizes the application's settings into a single object for easy access.
-     * 
-     * @returns {Config} The aggregated configuration object
+     * Retrieves the Aggregated Configuration Object
+     *
+     * Combines all configuration sources into a single structured object (`Config`) 
+     * for easy and centralized access across the application.
+     *
+     * @returns {Config} The combined configuration object containing `app` and `redis` settings.
      */
     getConfig(): Config {
         return {
-            app: appConfig().app,                                 // Application configuration
+            app: appConfig().app, // Retrieves application-level configurations
+            redis: redis().redis, // Retrieves Redis-related configurations
         };
     }
 }

@@ -1,12 +1,15 @@
-import { Module } from '@nestjs/common';
-import { UsersService } from './users.service';
-import { UsersController } from './users.controller';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserEntity } from './entities/user.entity';
+import { BullQueueModule } from '../bull-queue/bull-queue.module';
 import { ActivityLogEventHandler } from './event.handler';
+import { WelcomeUserQueue } from './welcome-user.queue';
+import { UsersController } from './users.controller';
+import { UserEntity } from './entities/user.entity';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { UsersService } from './users.service';
+import { Module } from '@nestjs/common';
 
 @Module({
   imports: [
+    BullQueueModule,
     TypeOrmModule.forFeature([
       UserEntity
     ]),
@@ -14,6 +17,7 @@ import { ActivityLogEventHandler } from './event.handler';
   controllers: [UsersController],
   providers: [
     UsersService,
+    WelcomeUserQueue,
     ActivityLogEventHandler
   ],
 })

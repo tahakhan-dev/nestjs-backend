@@ -1,53 +1,74 @@
 /**
- * This module is responsible for loading and initializing system-wide constants
- * from the application's configuration service. These constants are populated
- * dynamically from environment variables or configuration files during runtime
- * and are made available for use throughout the application.
+ * System Constants Module
  *
- * The constants defined here are essential for configuring critical application
- * behavior, such as API paths, microservice routes, and throttling limits.
+ * This module is responsible for loading and initializing system-wide constants
+ * from the application's configuration service. These constants are dynamically
+ * populated during runtime from environment variables or configuration files 
+ * and made accessible throughout the application.
+ *
+ * The constants defined here are critical for configuring key aspects of the 
+ * application's behavior, including API paths, application metadata, and logging settings.
  */
 
 import { ConfigService } from '@nestjs/config';
 
 /**
- * Dynamically loads system-wide constants using the provided configuration service.
- * 
- * This function retrieves configuration values from environment variables or
- * configuration files through the `ConfigService` instance. These values are used
- * to define key settings and paths for the application's operation.
- * 
- * @param {ConfigService} configService - The configuration service instance
- *                                         from NestJS to access application config.
- * @returns {object} An object containing system constants used across the application.
+ * Loads System-Wide Constants
+ *
+ * Dynamically retrieves configuration values using the provided `ConfigService`.
+ * These values are sourced from environment variables or configuration files 
+ * and are used to define essential settings for the application.
+ *
+ * @param {ConfigService} configService - The instance of `ConfigService` provided by NestJS 
+ *                                         to access application configuration settings.
+ * @returns {object} An object containing key system constants for the application.
  */
 export const loadSystemConstants = (configService: ConfigService) => ({
+    /**
+     * Application Version
+     *
+     * Specifies the current version of the application. This is retrieved from 
+     * the `app.version` configuration value.
+     */
+    APP_VERSION: configService.get<string>('app.version'),
 
-    // Application metadata
-    APP_VERSION: configService.get<string>('app.version'),             // Application's current version
+    /**
+     * Logging Configuration
+     *
+     * Determines whether logging is enabled for TypeORM or other services. 
+     * This is retrieved from the `app.logging` configuration value and 
+     * is expected to be a boolean.
+     */
+    ENABLE_LOGGING: configService.get<boolean>('app.logging'),
 
-    ENABLE_LOGGING: configService.get<boolean>('app.logging'),         // Enable logging for TypeORM
-
-    API_PATH: configService.get<string>('app.api_path'), // Base path for the application's API
-
-
+    /**
+     * API Base Path
+     *
+     * Specifies the base path for the application's API. This value is 
+     * retrieved from the `app.api_path` configuration setting.
+     */
+    API_PATH: configService.get<string>('app.api_path'),
 });
 
 /**
- * A global object to store system constants after they are loaded.
+ * Global System Constants Object
  *
- * This object will be initialized with the values returned by `loadSystemConstants`.
- * It provides a single, centralized place to access application-wide constants.
+ * A global object that stores system-wide constants after they are loaded. 
+ * This object is initialized with the values returned by the `loadSystemConstants` 
+ * function and provides a centralized source of constants used throughout the application.
  */
 export let SYSTEM_CONSTANT: ReturnType<typeof loadSystemConstants>;
 
 /**
- * Initializes the `SYSTEM_CONSTANT` object by loading constants from the configuration service.
+ * Initializes System Constants
  *
- * This function should be called during the application's startup process to ensure
- * that the system-wide constants are available throughout the application's lifecycle.
- * 
- * @param {ConfigService} configService - The configuration service instance from NestJS.
+ * Loads the system-wide constants from the provided `ConfigService` and assigns 
+ * them to the `SYSTEM_CONSTANT` object. This function should be called during 
+ * the application's startup process to ensure the constants are available 
+ * throughout the application's lifecycle.
+ *
+ * @param {ConfigService} configService - The instance of `ConfigService` provided by NestJS 
+ *                                         to load configuration settings.
  */
 export const initializeSystemConstants = (configService: ConfigService) => {
     SYSTEM_CONSTANT = loadSystemConstants(configService);

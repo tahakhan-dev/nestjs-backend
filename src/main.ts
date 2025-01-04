@@ -7,9 +7,9 @@ import * as cors from 'cors';
 import { Logger, ValidationPipe, VersioningType } from '@nestjs/common';
 
 async function bootstrap() {
+  // Initialize a logger instance with a custom context label
+  const logger = new Logger('Backend-Test-Service');
   try {
-    // Initialize a logger instance with a custom context label
-    const logger = new Logger('Backend-Test-Service');
 
     // Check if logging is enabled based on the environment variable 'ENABLE_LOGGING'
     const enableLogging = process.env.ENABLE_LOGGING === 'true'
@@ -65,25 +65,12 @@ async function bootstrap() {
 
     // Start the application and listen on the configured port
     await app.listen(configService.get<number>('app.port'), () => {
-      console.log(`Backend Test Service is running on port ${configService.get<number>('app.port')}`);
-    });
-
-    // Graceful shutdown handlers
-    process.on('SIGINT', async () => {
-      console.log('SIGINT signal received. Closing HTTP server...');
-      await app.close();
-      process.exit(0);
-    });
-
-    process.on('SIGTERM', async () => {
-      console.log('SIGTERM signal received. Closing HTTP server...');
-      await app.close();
-      process.exit(0);
+      logger.log(`Backend Test Service is running on port ${configService.get<number>('app.port')}`);
     });
 
 
   } catch (error) {
-    console.log(error, 'Bootstrap Error');
+    logger.error(`Error starting the application: ${error}`);
   }
 }
 bootstrap();

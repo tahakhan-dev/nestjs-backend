@@ -28,7 +28,7 @@ export const loadSystemConstants = (configService: ConfigService) => ({
 
     ENABLE_LOGGING: configService.get<boolean>('app.logging'),         // Enable logging for TypeORM
 
-    API_PATH: configService.get<string>('app.API_PATH'), // Base path for the application's API
+    API_PATH: configService.get<string>('app.api_path'), // Base path for the application's API
 
 
 });

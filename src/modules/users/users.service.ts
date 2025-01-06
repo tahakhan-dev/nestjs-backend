@@ -3,7 +3,7 @@ import { BullQueueService } from '../bull-queue/bull-queue.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserEntity } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { MoreThan, Repository } from 'typeorm';
 
 
 /**
@@ -108,7 +108,7 @@ export class UsersService {
   async getAdultUsersSortedByName(): Promise<UserEntity[]> {
     try {
       return await this.userRepository.find({
-        where: { age: 18 },
+        where: { age: MoreThan(18) },
         order: { name: 'ASC' },
       });
     } catch (error) {

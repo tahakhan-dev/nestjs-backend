@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  app:
+    container_name: nestjs-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '${PORT}:${PORT}' # Dynamically maps the port from the .env
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    command: pnpm run start:dev
+
+  postgres:
+    container_name: postgres
+    image: postgres:15
+    ports:
+      - '${DB_PORT}:${DB_PORT}' # Dynamically maps the port from the .env
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_DATABASE}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    container_name: redis
+    image: redis:7
+    ports:
+      - '${REDIS_PORT}:${REDIS_PORT}' # Dynamically maps the port from the .env
+    command: redis-server
+    env_file:
+      - .env
+    volumes:
+      - redis_data:/data
+
+volumes:
+  postgres_data:
+  redis_data:
